@@ -15,6 +15,7 @@ SECRET_KEY = 'django-insecure-+6vda)64=6h=wa9#31p!@n)++datt97eufhxb_io9s^k^2wsj-
 DEBUG = True
 
 ALLOWED_HOSTS = []
+AUTH_USER_MODEL = 'base.MyUser'
 
 
 # Application definition
@@ -43,10 +44,10 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://localhost:3000",
-   
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
 ]
-CORS_ALLOW_CREDENTIALS: True
+CORS_ALLOW_CREDENTIALS = True
 
 
 MEDIA_URL = '/media/'
