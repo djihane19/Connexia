@@ -2,8 +2,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .models import MyUser
-from .serializers import MyUserProfileSerializer,UserRegisterSerializer
+from .models import MyUser, Post
+from .serializers import MyUserProfileSerializer,UserRegisterSerializer, PostSerializer
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -136,5 +136,14 @@ def toggleFollow(request):
     except:
         return Response({'error':'error following user'})
 
-
-  
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_posts(request, pk):
+    try:
+        user = MyUser.objects.get(username=pk)
+    except MyUser.DoesNotExist:
+        return Response({'error': 'User does not exist'})
+    
+    posts = user.posts.all().order_by('-created_at')
+    serializer = PostSerializer(posts, many=True)
+    return Response(serializer.data)
