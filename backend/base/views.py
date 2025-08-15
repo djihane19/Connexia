@@ -138,12 +138,48 @@ def toggleFollow(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_user_posts(request, pk):
+def get_users_posts(request, pk):
     try:
         user = MyUser.objects.get(username=pk)
+        my_user = MyUser.objects.get(username=request.user.username)
     except MyUser.DoesNotExist:
         return Response({'error': 'User does not exist'})
     
     posts = user.posts.all().order_by('-created_at')
     serializer = PostSerializer(posts, many=True)
-    return Response(serializer.data)
+
+    data = []
+    for post in serializer.data:
+        new_post = {} 
+
+        if my_user.username in  post['likes']:
+            new_post = {**post,'liked':True}
+        else:
+            new_post = {**post,'liked':False}
+        data.append(new_post)
+
+ 
+    return Response(data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def toggleLike(request):
+    try:
+        try:
+            post = Post.objects.get(id=request.data['id'])
+        except Post.DoesNotExist:
+            return Response({'error': 'Post does not exist'}, status=404)
+
+        try:
+            user = MyUser.objects.get(username=request.user.username)
+        except MyUser.DoesNotExist:
+            return Response({'error': 'User does not exist'}, status=404)
+    
+        if user in post.likes.all():
+            post.likes.remove(user)
+            return Response({'now_liked': False, 'like_count': post.likes.count()})
+        else:
+            post.likes.add(user)
+            return Response({'now_liked': True, 'like_count': post.likes.count()})
+    except Exception as e:
+        return Response({'error': 'Failed to like post'}, status=500)

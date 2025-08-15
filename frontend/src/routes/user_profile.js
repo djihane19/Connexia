@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import {Box, Button, Flex, Heading, HStack, Image, Spacer, Text, VStack} from '@chakra-ui/react'
-import { get_user_profile_data ,toggleFollow} from '../api/endpoint'
+import {Box, Button, Flex, Heading, HStack, Image, Skeleton, Spacer, Stack, Text, VStack} from '@chakra-ui/react'
+import { get_user_profile_data ,get_users_posts,toggleFollow} from '../api/endpoint'
 import { SERVER_URL } from '../constants/constants'
+import Post from '../components/post'
 
 const UserProfile = () => {
 
@@ -21,7 +22,9 @@ const UserProfile = () => {
         <VStack w='75%'  >
             <Box w='100%' mt='40px' >
                 <UserDetails username={username}/>
-
+            </Box>
+            <Box w='100%' mt='50px' >
+                <UserPosts username={username}/>             
             </Box>
         </VStack>
     </Flex>
@@ -113,5 +116,62 @@ const UserDetails = ({username}) =>{
         </VStack>
     )
 }
+
+const UserPosts = ({ username }) => {
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const response = await get_users_posts(username);
+                if (Array.isArray(response)) {
+                    setPosts(response);
+                } else {
+                    setError(response.error || 'Invalid response from server.');
+                    setPosts([]);
+                }
+            } catch (error) {
+                console.error('Failed to fetch user posts:', error);
+                setError('Unable to load posts. Please try again later.');
+                setPosts([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPosts();
+    }, [username]);
+
+    return (
+        <Flex w='100%' flexWrap='wrap' justifyContent='start' gap='20px'>
+            {error ? (
+                <Text color='red.500'>{error}</Text>
+            ) : loading ? (
+                <Stack w='100%'> 
+                    <Skeleton height='300px' />
+                    <Skeleton height='300px' />
+                    <Skeleton height='300px' />
+                </Stack>
+            ) : posts.length === 0 ? (
+                <Text>No posts available.</Text>
+            ) : (
+                posts.map((post, index) => (
+                    <Post
+                        key={post.id || index}
+                        postId={post.id}
+                        username={post.username}
+                        description={post.description}
+                        formatted_date={post.formatted_date}
+                        liked={post.liked}
+                        like_count={post.likes_count || 0}
+                    />
+                ))
+            )}
+        </Flex>
+    );
+};
+
+
 
 export default UserProfile

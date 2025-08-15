@@ -58,3 +58,15 @@ export const toggleFollow = async (username) =>{
     const response = await api.post('/toggle_follow/', {username});
     return response.data
 }
+
+export const get_users_posts = async (username) => {
+    const response = await api.get(`/posts/${username}/`);
+    return response.data;
+};
+
+export const toggleLike = async (postId) => {
+    const response = await api.post('/toggleLike/', { id: postId });
+    return response.data;
+};
+
+// Assuming other endpoints like get_user_profile_data, toggleFollow are defined here
