@@ -183,3 +183,26 @@ def toggleLike(request):
             return Response({'now_liked': True, 'like_count': post.likes.count()})
     except Exception as e:
         return Response({'error': 'Failed to like post'}, status=500)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_post(request):
+    try:
+        data= request.data
+
+        try:
+            user = MyUser.objects.get(username=request.user.username)
+        except  MyUser.DoesNotExits:
+            return Response({'error':'user does not exist'})
+    
+        post = Post.objects.create(
+            user= user,
+            description=data['description'] )
+
+        serializer = PostSerializer(post,many=False)
+
+        return Response(serializer.data)
+    
+    except:
+        return Response({'error':'error creating post'})
