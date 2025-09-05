@@ -2,6 +2,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
+from rest_framework.pagination import PageNumberPagination
+
 from .models import MyUser, Post
 from .serializers import MyUserProfileSerializer,UserRegisterSerializer, PostSerializer
 
@@ -217,7 +219,12 @@ def get_posts(request):
         return Response({'error': 'User does not exist'})
 
     posts = Post.objects.all().order_by('-created_at')
-    serializer = PostSerializer(posts, many=True)
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 10
+
+    result_page = paginator.paginate_queryset(posts, request)
+    serializer = PostSerializer(result_page, many=True)
 
     data = []
     for post in serializer.data:
@@ -230,6 +237,6 @@ def get_posts(request):
         data.append(new_post)
 
  
-    return Response(data)
-
+    return paginator.get_paginated_response(data)
+ 
 

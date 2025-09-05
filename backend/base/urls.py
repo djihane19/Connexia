@@ -15,7 +15,7 @@ urlpatterns = [
     path('posts/<str:pk>/', get_users_posts),
     path('toggleLike/', toggleLike, name='toggle_like'),
     path('create_post/',create_post),
-    path('get_posts', get_posts),
+    path('get_posts/', get_posts),
 
     
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

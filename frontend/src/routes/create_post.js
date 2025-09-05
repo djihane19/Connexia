@@ -1,14 +1,19 @@
 import { Flex, VStack,Text,Heading,FormControl,FormLabel,Input,Button } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { create_post } from '../api/endpoint'
+import { useNavigate } from 'react-router-dom'
 
 
 const CreatePost = () => {
+
+
     const [description, setDescription] = useState('')
+    const nav = useNavigate()
 
     const handlePost= async ()=>{
         try{
             await create_post(description)
+            nav('/')
         }catch{
             alert('Error creating post')
 

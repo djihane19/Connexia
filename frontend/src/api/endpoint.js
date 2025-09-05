@@ -74,3 +74,8 @@ export const create_post = async (description) =>{
     const response = await api.post('/create_post/',{description:description})
     return response.data
 }
+
+export const get_posts = async(num) =>{
+    const response = await api.get(`/get_posts/?page=${num}`)
+    return response.data
+}

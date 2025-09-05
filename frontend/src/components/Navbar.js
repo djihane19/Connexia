@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import {IoPersonOutline} from 'react-icons/io5';
 import { IoIosAddCircle } from "react-icons/io";
 import { MdOutlineAddToPhotos } from "react-icons/md";
+import {FaHouse} from 'react-icons/fa6';
 
 const Navbar = () => {
 
@@ -23,6 +24,7 @@ const Navbar = () => {
         <HStack gap='20px' >
             <Text onClick={(route)=>handleNavigate('rin')}> <IoPersonOutline size='25px' /> </Text>
             <Text onClick={(route)=>handleNavigate('create/post')}> <MdOutlineAddToPhotos /></Text>
+            <Text onClick={(route)=>handleNavigate('')}> <FaHouse size='20px' /></Text>
         </HStack>
         </HStack>
     </Flex>

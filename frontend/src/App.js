@@ -9,6 +9,7 @@ import Register from './routes/Register';
 import { AuthProvider } from './contexts/useAuth';
 import PrivateRoute from './components/private_route';
 import CreatePost from './routes/create_post';
+import Home from './routes/home';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Routes>
           <Route  element={<Layout><PrivateRoute><UserProfile/></PrivateRoute></Layout> } path='/:username'   />
           <Route  element={<Layout><PrivateRoute><CreatePost/></PrivateRoute></Layout> } path='/create/post'   />
+          <Route  element={<Layout><PrivateRoute><Home/></PrivateRoute></Layout> } path='/'   />
           <Route  element={<Layout> <Login/> </Layout> } path='/login'   />
           <Route  element={<Layout> <Register/> </Layout> } path='/register'   />
      
